@@ -227,7 +227,6 @@ class MinesweeperAI():
         #4
         
         for sentence in self.knowledge:
-            print(sentence)
             new_mines = sentence.known_mines()
             new_safes = sentence.known_safes()
 
@@ -259,7 +258,6 @@ class MinesweeperAI():
         """
         for cell in self.safes:
             if cell not in self.moves_made:
-                print(cell)
                 return cell
         return None
 
@@ -271,14 +269,15 @@ class MinesweeperAI():
             2) are not known to be mines
         """
 
-
-        # A CHANGER POUR RANDOM ?
-
+        board = set()
 
         for i in range(self.height):
             for j in range(self.width):
-                move = (i,j)
-                if move not in self.moves_made and move not in self.mines:
-                    print(move)
-                    return move
+                board.add((i,j))
+            
+        board = board.difference(self.moves_made)
+        board = board.difference(self.mines)
+
+        if len(board) != 0:
+            return random.sample(board, 1)[0]
         return None
