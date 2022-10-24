@@ -178,17 +178,25 @@ class MinesweeperAI():
         return cell[0] >= 0 and cell[1] >= 0 and cell[0] < self.height and cell[1] < self.width
     
     def inference(self):
-        new_sentences = list()
+        infer = False
+        """
+        Called to make inferences to the knowledge.
+
+        Returns True if inferences were made.
+        """
         
         for sentence in self.knowledge:
             others =  [s for s in self.knowledge if s!= sentence]
             
             for o in others:
                 if sentence.cells.issubset(o.cells) and len(sentence.cells) != 0:
-                    new_sentences.append(Sentence(o.cells.difference(sentence.cells), o.count - sentence.count))
-            
-        for sentence in new_sentences:
-            self.knowledge.append(sentence)
+                    new_sentence = Sentence(o.cells.difference(sentence.cells), o.count - sentence.count)
+                    if new_sentence not in self.knowledge:
+                        #inference is found
+                        infer = True
+                        self.knowledge.append(new_sentence)
+        
+        return infer
 
     
     def add_knowledge(self, cell, count):
@@ -213,37 +221,40 @@ class MinesweeperAI():
         self.mark_safe(cell)
 
         #3
-        #besoin de réduire le nombre de bombe si un voisin est une bombe ?
         new_sentence = Sentence(set(), count)
         for i in range(cell[0]-1, cell[0]+2):
             for j in range(cell[1]-1, cell[1]+2):
                 neighbor = (i,j)
-                if self.in_board(neighbor) and neighbor not in self.safes and neighbor not in self.mines and not (i == cell[0] and j == cell[1]):
+                if self.in_board(neighbor) and neighbor not in self.safes and neighbor not in self.mines:
                     new_sentence.cells.add(neighbor)
                 if neighbor in self.mines:
                     new_sentence.count = new_sentence.count - 1
         self.knowledge.append(new_sentence)
  
         #4
-        
-        for sentence in self.knowledge:
-            new_mines = sentence.known_mines()
-            new_safes = sentence.known_safes()
+        infer = True
+        stop = False
 
-            if not(len(new_mines) == 0 and len(new_safes) == 0):
-                for m in new_mines:
-                    self.mark_mine(m)
-                for s in new_safes:
-                    self.mark_safe(s)
+        #loop while there was an inference OR a new mine/safe tile was found
+        while infer or not stop:
+            #no new mine/safe found
+            stop = True
+            for sentence in self.knowledge:
+                new_mines = sentence.known_mines()
+                new_safes = sentence.known_safes()
 
+                if not (len(new_mines) == 0 and len(new_safes) == 0):
+                    #new mine/safe found
+                    stop = False
+                    for m in new_mines:
+                        self.mark_mine(m)
+                    for s in new_safes:
+                        self.mark_safe(s)
             #5
-        self.inference()
+            infer = self.inference()
 
-        #clean knowledge
-        self.knowledge = [s for s in self.knowledge if len(s.cells) != 0]
-        
-        #loop somehow ?
-        #+ pb avec la boucle au bout d'un moment ??
+            #clean knowledge if empty
+            self.knowledge = [s for s in self.knowledge if len(s.cells) != 0]
 
 
 
