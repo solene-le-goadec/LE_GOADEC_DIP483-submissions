@@ -3,3 +3,5 @@
 ### Author : Solène Stéphanie Nolwenn Le Goadec
 
 ## Task 1 - tictactoe
+
+## Task 2 - minesweeper
