@@ -6,4 +6,4 @@
 
 ## Task 2 - minesweeper
 
-## Tas3 - crossword
+## Task3 - crossword
