@@ -1,8 +1,6 @@
 import sys
 
 from crossword import *
-import time
-
 
 class CrosswordCreator():
 
@@ -214,9 +212,7 @@ class CrosswordCreator():
         """
 
         tmp = list(self.domains[var].copy())
-        return sorted(tmp, key=lambda x: self.number_ruled_out(assignment, var, x)) 
-
-        return list(self.domains[var])
+        return sorted(tmp, key=lambda x: self.number_ruled_out(assignment, var, x))
 
     def select_unassigned_variable(self, assignment):
         """
@@ -260,11 +256,7 @@ class CrosswordCreator():
         If no assignment is possible, return None.
         """
         temp = list()
-        time1 = time.time()
-        res = self.recursive_backtrack(assignment, temp)
-        time2 = time.time()
-        print(time2 - time1)
-        return res
+        return self.recursive_backtrack(assignment, temp)
 
 
 def main():
