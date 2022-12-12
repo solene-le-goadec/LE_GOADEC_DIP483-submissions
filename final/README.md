@@ -23,6 +23,7 @@ Otherwise, a JSON confirming the **update of the database** is returned.
 ### Decline a suggestion
 
 https://final-submission-legoadec.et.r.appspot.com/declined
+
 Use the parameters "suggestion" (the declined suggestion) and "name" (the name you wanted to use). 
 Optionnal parameter "url" can be added if you want to be redirected afterwards. 
 Otherwise, a JSON confirming the **update of the database** is returned.
