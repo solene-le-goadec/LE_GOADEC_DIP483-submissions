@@ -82,7 +82,8 @@ def get_suggestions():
         'type': 'result', 
         'content': suggestions, 
         'status': 'REQUEST_OK'
-    }   
+    } 
+    print(names)  
     return jsonify(result)
 
 @app.route("/accepted", methods=['GET'])
@@ -138,7 +139,7 @@ def declined():
     
     data = read_file()
 
-    if suggestion == 'No suggestion found':
+    if suggestion != 'No suggestion found':
         decrease_pk(data, suggestion)
     if name in data.keys():
             increase_pk(data, name)
@@ -236,7 +237,7 @@ def increase_pk(data, name):
     data[name] = pk_star
 
 def decrease_pk(data, name):
-    pk_new = 0.7
+    pk_new = 0.8
     pk_star = data[name] - (1-data[name]) * pk_new
 
     data[name] = pk_star
