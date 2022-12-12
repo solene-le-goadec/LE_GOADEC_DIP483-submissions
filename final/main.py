@@ -212,7 +212,7 @@ def update_database(data):
         writer.writerow(row)
     file.close()
     """
-    names = data
+    names = {suggestion: priority for suggestion, priority in data.items() if priority > 0.2}
     print("DEBUG -- DATABASE UPDATED :")
     print_database()
 
