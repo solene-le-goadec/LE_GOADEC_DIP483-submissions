@@ -3,6 +3,8 @@ from flask import Flask, jsonify, request, redirect
 
 app = Flask(__name__)
 
+names = {}
+
 @app.route("/")
 def index():
     chars = request.args.get("chars", "")
@@ -74,7 +76,7 @@ def get_suggestions():
     except:
         return "chars should be a string"
     
-    data = read_database()
+    data = read_file()
     suggestions = filter_database(data, chars)
     result = { 
         'type': 'result', 
@@ -98,7 +100,7 @@ def accepted():
     except:
         return "The name parameter should be a string"
     
-    data = read_database()
+    data = read_file()
 
     increase_pk(data, name)
     update_database(data)
@@ -134,7 +136,7 @@ def declined():
     except:
         return "The name and suggestion parameters should be strings"
     
-    data = read_database()
+    data = read_file()
 
     if suggestion == 'No suggestion found':
         decrease_pk(data, suggestion)
@@ -176,26 +178,29 @@ def readme():
     """
 
 def print_database():
+    """
     with open('database.csv', newline='') as csvfile:
         data = csv.DictReader(csvfile)
         for row in data:
             print(row['Name'], row['Pk'])
+    """
+    print(names)
 
-def read_database():
+def read_file():
     """
-    Reads the database and returns a corresponding dictionnary.
+    Reads the initial database and returns a corresponding dictionnary.
     """
-    database = {}
-    with open('database.csv', newline='') as csvfile:
-        data = csv.DictReader(csvfile)
-        for row in data:
-            database[row['Name']] = float(row['Pk'])
-    return database
+    if not names :
+        with open('database.csv', newline='') as csvfile:
+            data = csv.DictReader(csvfile)
+            for row in data:
+                names[row['Name']] = float(row['Pk'])
+    return names
 
 def update_database(data):
     """
     Updates the database according to a given dictionnary.
-    """
+    
     clean_data = {suggestion: priority for suggestion, priority in data.items() if priority > 0.2}
 
     file = open('database.csv', 'w', newline='')
@@ -205,6 +210,10 @@ def update_database(data):
         row = [k, v]
         writer.writerow(row)
     file.close()
+    """
+    names = data
+    print("DEBUG -- DATABASE UPDATED :")
+    print_database()
 
 def new_name(data, name):
     """
