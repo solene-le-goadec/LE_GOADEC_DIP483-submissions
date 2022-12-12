@@ -232,15 +232,15 @@ def filter_database(data, first_caracters):
 
 def increase_pk(data, name):
     pk_new = 0.6
-    pk_star = data[name] + (1-data[name]) * pk_new
-
-    data[name] = pk_star
+    if name in data.keys():
+        pk_star = data[name] + (1-data[name]) * pk_new
+        data[name] = pk_star
 
 def decrease_pk(data, name):
     pk_new = 0.8
-    pk_star = data[name] - (1-data[name]) * pk_new
-
-    data[name] = pk_star
+    if name in data.keys():
+        pk_star = data[name] - (1-data[name]) * pk_new
+        data[name] = pk_star
 
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=8080, debug=True)
